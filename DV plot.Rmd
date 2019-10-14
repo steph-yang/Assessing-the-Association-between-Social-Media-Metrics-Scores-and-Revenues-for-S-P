@@ -1,0 +1,232 @@
+---
+title: "Revenes plot"
+author: "Stephanie Yang jy2777"
+date: "12/7/2017"
+output: html_document
+---
+
+```{r}
+setwd("~/Desktop/Homework/Statistical Methods/Project/datasets")
+#quarterly sales data, data points from CapitalIQ over 2 years
+colgate.sales <- read.csv("colgate_sales.csv")
+
+#cleaning sales sheet: subsets,transposes and reformats data
+colgate.sales2 <- colgate.sales[c(10,13),11:19]  
+colgate.sales2 <- t(colgate.sales2)
+colnames(colgate.sales2)<- c("Date","Sales")
+colgate.sales2[,2] <- as.numeric(gsub(",","",colgate.sales2[,2]))
+colgate.sales2 <- as.data.frame(colgate.sales2)
+colgate.sales2$Sales <- as.numeric(as.character(colgate.sales2$Sales))
+colgate.dv <- colgate.sales2$Sales
+
+
+#quarterly sales data, data points from CapitalIQ over 2 years
+setwd("~/Desktop/Homework/Statistical Methods/Project/datasets")
+johnson.sales <- read.csv("johnson_sales.csv")
+
+#cleaning sales sheet: subsets,transposes and reformats data
+johnson.sales2 <- johnson.sales[c(10,13),46:54]  
+johnson.sales2 <- t(johnson.sales2)
+colnames(johnson.sales2)<- c("Date","Sales")
+johnson.sales2[,2] <- as.numeric(gsub(",","",johnson.sales2[,2]))
+johnson.sales2 <- as.data.frame(johnson.sales2)
+johnson.sales2$Sales <- as.numeric(as.character(johnson.sales2$Sales))
+johnson.dv <- johnson.sales2$Sales
+
+#quarterly sales data, data points from CapitalIQ over 2 years
+setwd("~/Desktop/Homework/Statistical Methods/Project/datasets")
+cocacola.sales <- read.csv("cocacola_sales 2.csv")
+
+#cleaning sales sheet: subsets,transposes and reformats data
+cocacola.sales2 <- cocacola.sales[c(10,13),80:88] 
+cocacola.sales2 <- t(cocacola.sales2)
+colnames(cocacola.sales2)<- c("Date","Sales")
+cocacola.sales2[,2] <- as.numeric(gsub(",","",cocacola.sales2[,2]))
+cocacola.sales2 <- as.data.frame(cocacola.sales2)
+cocacola.sales2$Sales <- as.numeric(as.character(cocacola.sales2$Sales))
+cocacola.dv <- cocacola.sales2$Sales
+
+#quarterly sales data, data points from CapitalIQ over 2 years
+setwd("~/Desktop/Homework/Statistical Methods/Project/datasets")
+kellogg.sales <- read.csv("kellogg_sales.csv")
+
+#cleaning sales sheet: subsets,transposes and reformats data
+kellogg.sales2 <- kellogg.sales[c(10,13),90:98] 
+kellogg.sales2 <- t(kellogg.sales2)
+colnames(kellogg.sales2)<- c("Date","Sales")
+kellogg.sales2[,2] <- as.numeric(gsub(",","",kellogg.sales2[,2]))
+kellogg.sales2 <- as.data.frame(kellogg.sales2)
+kellogg.sales2$Sales <- as.numeric(as.character(kellogg.sales2$Sales))
+kellogg.dv <- kellogg.sales2$Sales
+
+#quarterly sales data, data points from CapitalIQ over 2 years
+setwd("~/Desktop/Homework/Statistical Methods/Project/datasets")
+tyson.sales <- read.csv("tyson_sales.csv")
+
+#cleaning sales sheet: subsets,transposes and reformats data
+tyson.sales2 <- tyson.sales[c(10,13),79:87]  
+tyson.sales2 <- t(tyson.sales2)
+colnames(tyson.sales2)<- c("Date","Sales")
+tyson.sales2[,2] <- as.numeric(gsub(",","",tyson.sales2[,2]))
+tyson.sales2 <- as.data.frame(tyson.sales2)
+tyson.sales2$Sales <- as.numeric(as.character(tyson.sales2$Sales))
+tyson.dv <- tyson.sales2$Sales
+
+#quarterly sales data, data points from CapitalIQ over 2 years
+setwd("~/Desktop/Homework/Statistical Methods/Project/datasets")
+gap.sales <- read.csv("gap_sales.csv")
+
+#cleaning sales sheet: subsets,transposes and reformats data
+gap.sales2 <- gap.sales[c(1,4),92:100]  
+gap.sales2 <- t(gap.sales2)
+colnames(gap.sales2)<- c("Date","Sales")
+gap.sales2[,2] <- as.numeric(gsub(",","",gap.sales2[,2]))
+gap.sales2 <- as.data.frame(gap.sales2)
+gap.sales2$Sales <- as.numeric(as.character(gap.sales2$Sales))
+gap.dv <- gap.sales2$Sales
+
+#quarterly sales data, data points from CapitalIQ over 2 years
+setwd("~/Desktop/Homework/Statistical Methods/Project/datasets")
+starbucks.sales <- read.csv("starbucks_sales.csv")
+
+#cleaning sales sheet: subsets,transposes and reformats data
+starbucks.sales2 <- starbucks.sales[c(10,13),47:55] 
+starbucks.sales2 <- t(starbucks.sales2)
+colnames(starbucks.sales2)<- c("Date","Sales")
+starbucks.sales2[,2] <- as.numeric(gsub(",","",starbucks.sales2[,2]))
+starbucks.sales2 <- as.data.frame(starbucks.sales2)
+starbucks.sales2$Sales <- as.numeric(as.character(starbucks.sales2$Sales))
+starbucks.dv <- starbucks.sales2$Sales
+
+#quarterly sales data, data points from CapitalIQ over 2 years
+setwd("~/Desktop/Homework/Statistical Methods/Project/datasets")
+chipotle.sales <- read.csv("chipotle_sales.csv")
+
+#cleaning sales sheet: subsets,transposes and reformats data
+chipotle.sales2 <- chipotle.sales[c(10,13),46:54] 
+chipotle.sales2 <- t(chipotle.sales2)
+colnames(chipotle.sales2)<- c("Date","Sales")
+typeof(chipotle.sales2[,2])
+chipotle.sales2[,2] <- as.numeric(gsub(",","",chipotle.sales2[,2]))
+chipotle.sales2 <- as.data.frame(chipotle.sales2)
+chipotle.sales2$Sales <- as.numeric(as.character(chipotle.sales2$Sales))
+chipotle.dv <- chipotle.sales2$Sales
+
+#quarterly sales data, data points from CapitalIQ over 2 years
+setwd("~/Desktop/Homework/Statistical Methods/Project/datasets")
+amazon.sales <- read.csv("amazon_sales.csv")
+
+#cleaning sales sheet: subsets,transposes and reformats data
+amazon.sales2 <- amazon.sales[c(10,13),78:86]  
+amazon.sales2 <- t(amazon.sales2)
+colnames(amazon.sales2)<- c("Date","Sales")
+amazon.sales2[,2] <- as.numeric(gsub(",","",amazon.sales2[,2]))
+amazon.sales2 <- as.data.frame(amazon.sales2)
+amazon.sales2$Sales <- as.numeric(as.character(amazon.sales2$Sales))
+amazon.dv <- amazon.sales2$Sales
+
+#quarterly sales data, data points from CapitalIQ over 2 years
+setwd("~/Desktop/Homework/Statistical Methods/Project/datasets")
+expedia.sales <- read.csv("expedia_sales.csv")
+
+#cleaning sales sheet: subsets,transposes and reformats data
+expedia.sales2 <- expedia.sales[c(10,13),3:11]  
+expedia.sales2 <- t(expedia.sales2)
+colnames(expedia.sales2)<- c("Date","Sales")
+expedia.sales2[,2] <- as.numeric(gsub(",","",expedia.sales2[,2]))
+expedia.sales2 <- as.data.frame(expedia.sales2)
+expedia.sales2$Sales <- as.numeric(as.character(expedia.sales2$Sales))
+expedia.dv <- expedia.sales2$Sales
+
+#quarterly sales data, data points from CapitalIQ over 2 years
+setwd("~/Desktop/Homework/Statistical Methods/Project/datasets")
+underarmour.sales <- read.csv("underarmour_sales.csv")
+
+#cleaning sales sheet: subsets,transposes and reformats data
+underarmour.sales2 <- underarmour.sales[c(1,4),46:54]  
+underarmour.sales2 <- t(underarmour.sales2)
+colnames(underarmour.sales2)<- c("Date","Sales")
+underarmour.sales2[,2] <- as.numeric(gsub(",","",underarmour.sales2[,2]))
+underarmour.sales2 <- as.data.frame(underarmour.sales2)
+underarmour.sales2$Sales <- as.numeric(as.character(underarmour.sales2$Sales))
+underarmou.dv <- underarmour.sales2$Sales
+
+#quarterly sales data, data points from CapitalIQ over 2 years
+setwd("~/Desktop/Homework/Statistical Methods/Project/datasets")
+netflix.sales <- read.csv("netflix_sales.csv")
+
+#cleaning sales sheet: subsets,transposes and reformats data
+netflix.sales2 <- netflix.sales[c(10,13),58:66] 
+netflix.sales2 <- t(netflix.sales2)
+colnames(netflix.sales2)<- c("Date","Sales")
+netflix.sales2[,2] <- as.numeric(gsub(",","",netflix.sales2[,2]))
+netflix.sales2 <- as.data.frame(netflix.sales2)
+netflix.sales2$Sales <- as.numeric(as.character(netflix.sales2$Sales))
+netflix.dv <- netflix.sales2$Sales
+
+#quarterly sales data, data points from CapitalIQ over 2 years
+setwd("~/Desktop/Homework/Statistical Methods/Project/datasets")
+paypal.sales <- read.csv("paypal_sales.csv")
+
+#cleaning sales sheet: subsets,transposes and reformats data
+paypal.sales2 <- paypal.sales[c(1,4),16:24]  
+paypal.sales2 <- t(paypal.sales2)
+colnames(paypal.sales2)<- c("Date","Sales")
+paypal.sales2[,2] <- as.numeric(gsub(",","",paypal.sales2[,2]))
+paypal.sales2 <- as.data.frame(paypal.sales2)
+paypal.sales2$Sales <- as.numeric(as.character(paypal.sales2$Sales))
+paypal.dv <- paypal.sales2$Sales 
+
+#quarterly sales data, data points from CapitalIQ over 2 years
+setwd("~/Desktop/Homework/Statistical Methods/Project/datasets")
+drpepper.sales <- read.csv("drpepper_sales.csv")
+
+#cleaning sales sheet: subsets,transposes and reformats data
+drpepper.sales2 <- drpepper.sales[c(10,13),38:46]
+drpepper.sales2 <- t(drpepper.sales2)
+colnames(drpepper.sales2)<- c("Date","Sales")
+drpepper.sales2[,2] <- as.numeric(gsub(",","",drpepper.sales2[,2]))
+drpepper.sales2 <- as.data.frame(drpepper.sales2)
+drpepper.sales2$Sales <- as.numeric(as.character(drpepper.sales2$Sales))
+drpepper.dv <- drpepper.sales2$Sales 
+
+#quarterly sales data, data points from CapitalIQ over 2 years
+setwd("~/Desktop/Homework/Statistical Methods/Project/datasets")
+mondelez.sales <- read.csv("mondelez_sales.csv")
+
+#cleaning sales sheet: subsets,transposes and reformats data
+mondelez.sales2 <- mondelez.sales[c(10,13),62:70]  
+mondelez.sales2 <- t(mondelez.sales2)
+colnames(mondelez.sales2)<- c("Date","Sales")
+mondelez.sales2[,2] <- as.numeric(gsub(",","",mondelez.sales2[,2]))
+mondelez.sales2 <- as.data.frame(mondelez.sales2)
+mondelez.sales2$Sales <- as.numeric(as.character(mondelez.sales2$Sales))
+mondelez.dv <- mondelez.sales2$Sales
+
+#quarterly sales data, data points from CapitalIQ over 2 years
+setwd("~/Desktop/Homework/Statistical Methods/Project/datasets")
+kraft.sales <- read.csv("kraft_sales.csv")
+
+#cleaning sales sheet: subsets,transposes and reformats data
+kraft.sales2 <- kraft.sales[c(10,13),6:14]  
+kraft.sales2 <- t(kraft.sales2)
+colnames(kraft.sales2)<- c("Date","Sales")
+kraft.sales2[,2] <- as.numeric(gsub(",","",kraft.sales2[,2]))
+kraft.sales2 <- as.data.frame(kraft.sales2)
+kraft.sales2$Sales <- as.numeric(as.character(kraft.sales2$Sales))
+kraft.dv <- kraft.sales2$Sales 
+
+library("ggplot2")
+
+new.dv <- c(colgate.dv, cocacola.dv, kellogg.dv, tyson.dv,gap.dv,starbucks.dv, chipotle.dv, amazon.dv,expedia.dv,underarmou.dv, paypal.dv, netflix.dv,drpepper.dv, kraft.dv,mondelez.dv)
+
+
+dv_df <- data.frame(group=c(rep("colgate",9),rep("cocacola",9),rep("kellogg",9),rep("tyson",9),rep("gap",9),rep("starbucks",9),rep("chipotle",9),rep("amazon",9),rep("expedia",9),rep("underarmour",9),rep("paypal",9),rep("netflix",9),rep("drpepper",9),rep("kraft",9),rep("mondelez",9)), time=c(rep(c(1:9),15)),new.dv)
+
+ggplot(data=dv_df,aes(x=time, y=new.dv, group=group, colour=group)) +
+    geom_line() +
+    geom_point()
+
+
+
+```

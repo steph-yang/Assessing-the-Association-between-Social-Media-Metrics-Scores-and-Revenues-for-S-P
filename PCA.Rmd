@@ -1,0 +1,59 @@
+---
+title: "PCA"
+author: "Stephanie Yang jy2777"
+date: "12/3/2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+PCA
+We did PCA seperately for all 16 companies and here is an example of Chipotle.
+```{r}
+setwd("~/Desktop/Homework/Statistical Methods/Project/datasets")
+#transpose t()
+chipotle.metrics <- t(read.csv("chipotle_metrics22.csv", header=FALSE))
+
+#labels columns 
+colnames(chipotle.metrics)<- c("Date","Likes (Total) FB","Comments (Total) FB","Shares (Total) FB","Reactions Per Post FB","Impressions (Total) FB","Impressions-viral (Total) FB","Impressions per Action FB","Impressions per Post FB","Actions (Total) FB","Actions per Impression (%) FB","Fans FB","Page Score FB","Posts (Total) FB","Average Engagement Per Post (%) FB","Actions Per Engager FB","Actions Per Post FB","Unique Engaged Audience FB","Average Click Engagement Per Post (%) FB","% Engaged Audience FB","% New Engagers FB","Posts (Category Total) FB","Clicks (Total) FB","Native Video Views (Lifetime Total) FB","Video (Total Actions) FB","% Shares FB","% Comments FB","% Likes FB","Likes (Total) TW","Retweets (Total) TW","Total Actions (% Followers) TW","Actions (Total) TW","Average Engagement Per Tweet (%) TW","Followers TW","Tweets (Total) TW","Clicks (Total) TW","Retweeter Followers (Average) TW","% Retweets TW","% Likes TW","Actions Per Tweet TW","Unique Engaged Audience TW","Unique Retweeters TW","% Engaged Audience TW","% New Engagers TW","Reactions (Total) FB","Actions Per Engager TW","Followers IG","Likes (Total) IG","Comments (Total) IG","Actions (Total) IG","Media (Total) IG","Average Engagement Per Media (%) IG","Actions Per Media IG","Photo (Total) IG","Video (Total) IG","Actions Per Engager IG","Unique Engaged Audience IG","Likes Per Media IG","% Likes IG","% Engaged Audience IG","% New Engagers IG","Videos (Total) YT","Likes (Total) YT","Dislikes (Total) YT","Comments (Total) YT","Views (Total) YT","Actions (Total) YT","Subscribers YT","Average Engagement Per Video (%) YT","Actions Per Video YT","% Likes YT","% Comments YT","% Views YT")
+
+#removes duplicate row
+chipotle.metrics1 <- chipotle.metrics[-1,]
+
+##Cleaning the metrics sheet
+#1) removes space in column titles
+colnames(chipotle.metrics1) <- gsub(" ","",colnames(chipotle.metrics1))
+
+#2) removes % symbol of column 10
+chipotle.metrics1[,c(11,15,19,20,21,26,27,28,31,33,38,39,43,44,52,59,60,61,69,71,72,73)] <- as.numeric(gsub("%", "",chipotle.metrics1[,c(11,15,19,20,21,26,27,28,31,33,38,39,43,44,52,59,60,61,69,71,72,73)]))/100
+chipotle.metrics1 <- as.data.frame(chipotle.metrics1)
+class(chipotle.metrics1)
+
+#3) removes comma separator for thousands, except for date column which is type character not numeric
+#gsub to replace "," with "", and then convert the string to numeric using as.numeric
+chipotle.metrics1[,2:73] <- lapply(chipotle.metrics1[,2:73], function(x) as.numeric(gsub(",","", as.character(x))))
+
+##Transforms Monthly to Quarterly Data:
+library("lubridate")  
+
+#creates a year and quarter column per row
+chipotle.metrics1$Date <- ymd(chipotle.metrics1$Date)
+chipotle.metrics1$year = year(chipotle.metrics1$Date)
+chipotle.metrics1$quarter = quarter(chipotle.metrics1$Date)
+
+#aggregates quarters of same year and takes their sum (sales are aldo sums) : HOW TO DO IT WITH AGGREGATE()?
+library("reshape2")
+chipotle.metrics2 <- melt(chipotle.metrics1[,2:75], id=c("quarter", "year"))
+chipotle.metrics2 <- dcast(chipotle.metrics2, year + quarter ~ variable, fun.aggregate = sum)
+
+#aggregate(chipotle.metrics1$year ~.,chipotle.metrics1, FUN = mean, na.action = na.omit)
+write.csv(chipotle.metrics2,file="chipotle_vizmetrics.csv")
+
+chipotle.metrics3 <- chipotle.metrics2[,-c(1:2)]
+chipotle.metrics3 <- chipotle.metrics3[complete.cases(chipotle.metrics3),]
+output.chi <- prcomp(chipotle.metrics3)
+output.chi$sdev[1]^2/sum(output.chi$sdev^2)
+output.chi$sdev[2]^2/sum(output.chi$sdev^2)
+output.chi$sdev[3]^2/sum(output.chi$sdev^2)
+
+```

@@ -1,0 +1,45 @@
+---
+title: "Cluster cross group"
+author: "Stephanie Yang jy2777"
+date: "12/2/2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r}
+setwd("~/Desktop")
+clusterfile <- read.csv("clusterFile.csv")
+clusterfile2 <- t(clusterfile[,-c(1,2)])
+
+d <- dist(clusterfile2, method = "euclidean") # distance matrix
+fit <- hclust(d, method="complete") 
+plot(fit) # display dendogram
+groups <- cutree(fit, k=3) # cut tree into 3 clusters
+# draw dendogram with red borders around the 3 clusters 
+rect.hclust(fit, k=3, border="red")
+
+
+# New Companies Only
+new.com <- clusterfile2[c(1,2,5,6,7,8,9,10,11),]
+d1 <- dist(new.com, method = "euclidean") # distance matrix
+fit.new <- hclust(d1, method="complete") 
+plot(fit.new) # display dendogram
+groups <- cutree(fit.new, k=3) # cut tree into 3 clusters
+# draw dendogram with red borders around the 3 clusters 
+rect.hclust(fit.new, k=3, border="red")
+
+
+# Old Companies Only
+old.com <- clusterfile2[-c(1,2,5,6,7,8,9,10,11),]
+d2 <- dist(old.com, method = "euclidean") # distance matrix
+fit.old <- hclust(d2, method="complete") 
+plot(fit.old) # display dendogram
+groups <- cutree(fit.old, k=3) # cut tree into 3 clusters
+# draw dendogram with red borders around the 3 clusters 
+rect.hclust(fit.old, k=3, border="red")
+
+
+
+
+```

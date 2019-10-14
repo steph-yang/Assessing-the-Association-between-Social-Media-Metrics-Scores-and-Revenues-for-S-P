@@ -1,0 +1,96 @@
+---
+title: "Multivariate Regression and Monte Carlo"
+author: "Stephanie Yang jy2777"
+date: "12/3/2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r}
+setwd("~/Desktop/Homework/Statistical Methods/Project/datasets")
+#transpose t()
+starbucks.metrics <- t(read.csv("starbucks_metrics2.csv", header=FALSE))
+
+#labels columns 
+colnames(starbucks.metrics)<- c("Date","Likes (Total) FB","Comments (Total) FB","Shares (Total) FB","Reactions Per Post FB","Impressions (Total) FB","Impressions-viral (Total) FB","Impressions per Action FB","Impressions per Post FB","Actions (Total) FB","Actions per Impression (%) FB","Fans FB","Page Score FB","Posts (Total) FB","Average Engagement Per Post (%) FB","Actions Per Engager FB","Actions Per Post FB","Unique Engaged Audience FB","Average Click Engagement Per Post (%) FB","% Engaged Audience FB","% New Engagers FB","Posts (Category Total) FB","Clicks (Total) FB","Native Video Views (Lifetime Total) FB","Video (Total Actions) FB","% Shares FB","% Comments FB","% Likes FB","Likes (Total) TW","Retweets (Total) TW","Total Actions (% Followers) TW","Actions (Total) TW","Average Engagement Per Tweet (%) TW","Followers TW","Tweets (Total) TW","Clicks (Total) TW","Retweeter Followers (Average) TW","% Retweets TW","% Likes TW","Actions Per Tweet TW","Unique Engaged Audience TW","Unique Retweeters TW","% Engaged Audience TW","% New Engagers TW","Reactions (Total) FB","Actions Per Engager TW","Followers IG","Likes (Total) IG","Comments (Total) IG","Actions (Total) IG","Media (Total) IG","Average Engagement Per Media (%) IG","Actions Per Media IG","Photo (Total) IG","Video (Total) IG","Actions Per Engager IG","Unique Engaged Audience IG","Likes Per Media IG","% Likes IG","% Engaged Audience IG","% New Engagers IG","Videos (Total) YT","Likes (Total) YT","Dislikes (Total) YT","Comments (Total) YT","Views (Total) YT","Actions (Total) YT","Subscribers YT","Average Engagement Per Video (%) YT","Actions Per Video YT","% Likes YT","% Comments YT","% Views YT")
+
+#removes duplicate row
+starbucks.metrics1 <- starbucks.metrics[-1,]
+
+##Cleaning the metrics sheet
+#1) removes space in column titles
+colnames(starbucks.metrics1) <- gsub(" ","",colnames(starbucks.metrics1))
+
+#2) removes % symbol of column 10
+starbucks.metrics1[,c(11,15,19,20,21,26,27,28,31,33,38,39,43,44,52,59,60,61,69,71,72,73)] <- as.numeric(gsub("%", "",starbucks.metrics1[,c(11,15,19,20,21,26,27,28,31,33,38,39,43,44,52,59,60,61,69,71,72,73)]))/100
+starbucks.metrics1 <- as.data.frame(starbucks.metrics1)
+class(starbucks.metrics1)
+
+#3) removes comma separator for thousands, except for date column which is type character not numeric
+#gsub to replace "," with "", and then convert the string to numeric using as.numeric
+starbucks.metrics1[,2:73] <- lapply(starbucks.metrics1[,2:73], function(x) as.numeric(gsub(",","", as.character(x))))
+
+##Transforms Monthly to Quarterly Data:
+library("lubridate")  
+
+#creates a year and quarter column per row
+starbucks.metrics1$Date <- ymd(starbucks.metrics1$Date)
+starbucks.metrics1$year = year(starbucks.metrics1$Date)
+starbucks.metrics1$quarter = quarter(starbucks.metrics1$Date)
+
+#aggregates quarters of same year and takes their sum (sales are aldo sums) : HOW TO DO IT WITH AGGREGATE()?
+library("reshape2")
+starbucks.metrics2 <- melt(starbucks.metrics1[,2:75], id=c("quarter", "year"))
+starbucks.metrics2 <- dcast(starbucks.metrics2, year + quarter ~ variable, fun.aggregate = sum)
+write.csv(starbucks.metrics2,file="colgate_vizmetrics.csv")
+starbucks.metrics2 <- starbucks.metrics2[1:9,]
+
+starbucks.metrics3 <- starbucks.metrics2[,-c(1,2)]
+starbucks.metrics3 <- starbucks.metrics3[complete.cases(starbucks.metrics3),]
+
+#*************************************************************
+#quarterly sales data, data points from CapitalIQ over 2 years
+starbucks.sales <- read.csv("starbucks_sales.csv")
+
+#cleaning sales sheet: subsets,transposes and reformats data
+starbucks.sales2 <- starbucks.sales[c(10,13),11:19]  
+starbucks.sales2 <- t(starbucks.sales2)
+colnames(starbucks.sales2)<- c("Date","Sales")
+starbucks.sales2[,2] <- as.numeric(gsub(",","",starbucks.sales2[,2]))
+starbucks.sales2 <- as.data.frame(starbucks.sales2)
+starbucks.sales2$Sales <- as.numeric(as.character(starbucks.sales2$Sales))
+
+output.star <- prcomp(starbucks.metrics3)
+
+PC1 <- output.star$rotation[,1]
+PC2 <- output.star$rotation[,2]
+PC3 <- output.star$rotation[,3]
+PC4 <- output.star$rotation[,4]
+PC5 <- output.star$rotation[,5]
+
+PC1_data <- PC1%*%t(starbucks.metrics3)
+new_sales <- starbucks.sales2$Sales[1:8]
+
+PC1_data <- as.numeric(PC1_data)
+
+fit.star<- lm(new_sales~PC1_data)
+
+
+summary(fit.star)
+
+# plot
+plot(1:8, rstudent(fit.star))
+lines(1:8, rstudent(fit.star), col=2)
+abline(h=0, lty=3)
+```
+
+
+
+```{r}
+library(arm)
+sim.1 <- sim(fit.star,1000)
+meanPC <- mean(PC1_data)
+Y.star <- sim.1@coef[,1]+sim.1@coef[,2]*meanPC+sim.1@sigma
+hist(Y.star, seq(2000,3500,50))
+````
